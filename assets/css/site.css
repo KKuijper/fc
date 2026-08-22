@@ -23,11 +23,11 @@
   --gutter: clamp(20px, 5vw, 72px);
   --measure: 1200px;
   --rule: 2px solid var(--color-divider);
-  --ink-78: color-mix(in srgb, var(--color-text) 78%, transparent);
-  --ink-70: color-mix(in srgb, var(--color-text) 70%, transparent);
-  /* 60% ink is 3.95:1 on the page ground, under the 4.5:1 that 13px text
-     needs; 68% clears it at 4.9:1 without visibly changing the hierarchy. */
-  --ink-60: color-mix(in srgb, var(--color-text) 68%, transparent);
+  /* Named for the job, not the percentage, because the percentages move.
+     Three steps down from full ink; every one clears AA on both grounds. */
+  --ink-body: color-mix(in srgb, var(--color-text) 88%, transparent);
+  --ink-label: color-mix(in srgb, var(--color-text) 78%, transparent);
+  --ink-muted: color-mix(in srgb, var(--color-text) 72%, transparent);
   --wa: #25d366;
   --wa-hover: #1da851;
   --wa-dark: #128c7e;
@@ -54,6 +54,10 @@ a:hover { color: var(--color-accent-600); }
 .wrap { max-width: var(--measure); margin: 0 auto; padding: 0 var(--gutter); }
 .band { background: var(--color-neutral-100); }
 .section { padding: 84px 0; }
+/* Our work and Occasion finder are the only two sections that sit back to back
+   on the same ground, so they ran together. The 2px rule is the same device the
+   page already uses between the service and step rows. */
+.section + .section { border-top: var(--rule); }
 
 /* ── Type ──────────────────────────────────────────────────────────────── */
 
@@ -73,13 +77,13 @@ a:hover { color: var(--color-accent-600); }
 .t-sub { font-size: 22px; line-height: 26px; letter-spacing: -0.01em; margin: 0; }
 .lede {
   font-size: 17px; line-height: 29px; max-width: 58ch;
-  color: var(--ink-78); margin: 20px 0 0;
+  color: var(--ink-body); margin: 20px 0 0;
 }
-.note { font-size: 17px; line-height: 24px; margin: 0; color: var(--ink-60); }
-.note-wide { max-width: 58ch; line-height: 28px; margin: 20px 0 0; color: var(--ink-70); }
+.note { font-size: 17px; line-height: 24px; margin: 0; color: var(--ink-muted); }
+.note-wide { max-width: 58ch; line-height: 28px; margin: 20px 0 0; color: var(--ink-label); }
 .field-label {
   font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-70); margin: 0 0 12px;
+  color: var(--ink-label); margin: 0 0 12px;
 }
 .field-label--tight { margin-bottom: 8px; }
 .tnum { font-feature-settings: 'tnum' 1; }
@@ -97,10 +101,12 @@ a:hover { color: var(--color-accent-600); }
 /* ── Buttons — brand variants on top of .btn ───────────────────────────── */
 
 /* Form text and buttons all read at the body size. The design system pairs
-   .btn with .input at 14px; that pairing is preserved, just at 17px. */
+   .btn with .input at 14px; that pairing is preserved, just at 17px.
+   Weight 600 rather than the heading's 800: at 800 the same word renders 13%
+   wider than body copy and reads as a larger size, which it is not. */
 .field > label { font-size: 17px; margin-bottom: 8px; }
 .input { font-size: 17px; }
-.btn { font-size: 17px; }
+.btn { font-size: 17px; font-weight: 600; }
 
 /* Contrast: the near-white label the design system puts on the brand orange
    is 2.5:1. Navy on the same orange is 5.25:1 and keeps the colour vivid, so
@@ -131,7 +137,7 @@ a:hover { color: var(--color-accent-600); }
 /* ── Option buttons (filters, occasions, products, swatches, segments) ─── */
 
 .opt {
-  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-family: var(--font-heading); font-weight: 600;
   font-size: 17px; padding: 10px 16px; cursor: pointer; white-space: nowrap;
   background: #fff; color: var(--color-text); border: var(--rule);
 }
@@ -146,6 +152,23 @@ a:hover { color: var(--color-accent-600); }
 .opt--seg [data-mark] { display: contents; }
 
 .opt-row { display: flex; gap: 8px; margin-top: 32px; overflow-x: auto; padding-bottom: 4px; }
+
+/* Touch platforms hide scrollbars at rest, so a row that scrolls sideways
+   looks like a row that simply ends. Fading whichever edge has more content
+   behind it makes the affordance visible without adding furniture. */
+[data-scrollable] { --fade: 32px; scrollbar-width: thin; }
+[data-scrollable][data-overflow='end'] {
+  -webkit-mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+          mask-image: linear-gradient(to right, #000 calc(100% - var(--fade)), transparent);
+}
+[data-scrollable][data-overflow='start'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade));
+          mask-image: linear-gradient(to right, transparent, #000 var(--fade));
+}
+[data-scrollable][data-overflow='both'] {
+  -webkit-mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+          mask-image: linear-gradient(to right, transparent, #000 var(--fade), #000 calc(100% - var(--fade)), transparent);
+}
 .opt-wrap { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
 .opt-group { display: flex; flex-wrap: wrap; gap: 10px; }
 .opt-seg-row { display: flex; gap: 0; }
@@ -217,7 +240,7 @@ a:hover { color: var(--color-accent-600); }
 }
 .stat-label {
   font-size: 13px; line-height: 14px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-70); margin: 14px 0 0;
+  text-transform: uppercase; color: var(--ink-label); margin: 14px 0 0;
 }
 
 /* ── Gallery ───────────────────────────────────────────────────────────── */
@@ -230,7 +253,7 @@ a:hover { color: var(--color-accent-600); }
 .gallery img { width: 100%; aspect-ratio: 1 / 1; object-fit: cover; display: block; }
 .gallery figcaption {
   font-size: 13px; line-height: 20px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-70); margin-top: 12px;
+  text-transform: uppercase; color: var(--ink-label); margin-top: 12px;
 }
 .gallery-foot {
   display: flex; gap: 20px 28px; flex-wrap: wrap; align-items: center;
@@ -239,7 +262,7 @@ a:hover { color: var(--color-accent-600); }
 }
 .gallery-foot-actions { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; }
 .gallery-count {
-  font-size: 13px; line-height: 20px; margin: 0; color: var(--ink-60);
+  font-size: 13px; line-height: 20px; margin: 0; color: var(--ink-muted);
   font-feature-settings: 'tnum' 1; white-space: nowrap;
 }
 
@@ -254,7 +277,7 @@ a:hover { color: var(--color-accent-600); }
   display: flex; flex-direction: column; gap: 10px;
 }
 .suggestion h3 { line-height: 24px; }
-.suggestion p { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-78); }
+.suggestion p { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-body); }
 
 /* ── Two-column tool panels (estimate + designer) ──────────────────────── */
 
@@ -289,7 +312,7 @@ a:hover { color: var(--color-accent-600); }
 }
 .readout dt {
   font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
-  color: var(--ink-70);
+  color: var(--ink-label);
 }
 .readout dd {
   margin: 0; font-family: var(--font-heading); font-weight: var(--font-heading-weight);
@@ -342,12 +365,12 @@ a:hover { color: var(--color-accent-600); }
   font-feature-settings: 'tnum' 1; color: var(--color-accent-700);
 }
 .service h3 { font-size: 22px; line-height: 26px; letter-spacing: -0.01em; margin: 0; }
-.service > p:last-child { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-78); max-width: 44ch; }
+.service > p:last-child { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-body); max-width: 44ch; }
 
 .methods { margin-top: 28px; }
 .methods-label {
   font-size: 13px; line-height: 20px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-70); margin: 0 0 14px;
+  text-transform: uppercase; color: var(--ink-label); margin: 0 0 14px;
 }
 .method-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .method-list li {
@@ -366,7 +389,7 @@ a:hover { color: var(--color-accent-600); }
 .split img { width: 100%; aspect-ratio: 951 / 665; object-fit: cover; display: block; }
 .split figcaption {
   font-size: 13px; line-height: 20px; letter-spacing: 0.08em;
-  text-transform: uppercase; color: var(--ink-70); margin-top: 12px;
+  text-transform: uppercase; color: var(--ink-label); margin-top: 12px;
 }
 
 /* ── How it works ──────────────────────────────────────────────────────── */
@@ -383,7 +406,7 @@ a:hover { color: var(--color-accent-600); }
   font-feature-settings: 'tnum' 1; color: var(--color-accent-700);
 }
 .step h3 { font-size: 22px; line-height: 28px; letter-spacing: -0.01em; margin: 0; }
-.step > div > p { font-size: 17px; line-height: 27px; margin: 10px 0 0; color: var(--ink-78); max-width: 60ch; }
+.step > div > p { font-size: 17px; line-height: 27px; margin: 10px 0 0; color: var(--ink-body); max-width: 60ch; }
 
 /* ── Reviews ───────────────────────────────────────────────────────────── */
 
@@ -406,7 +429,7 @@ a:hover { color: var(--color-accent-600); }
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 22px; line-height: 26px; letter-spacing: -0.01em; margin: 0;
 }
-.review figcaption { font-size: 13px; line-height: 20px; color: var(--ink-70); margin-top: auto; }
+.review figcaption { font-size: 13px; line-height: 20px; color: var(--ink-label); margin-top: auto; }
 
 /* ── Contact ───────────────────────────────────────────────────────────── */
 
@@ -441,7 +464,7 @@ a:hover { color: var(--color-accent-600); }
 .poster .cta-row { margin-top: 42px; }
 
 .site-footer {
-  padding: 56px 0; font-size: 13px; line-height: 28px; color: var(--ink-70);
+  padding: 56px 0; font-size: 13px; line-height: 28px; color: var(--ink-label);
   display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
 }
 .site-footer img { height: 32px; width: 32px; object-fit: contain; }
@@ -473,7 +496,7 @@ a:hover { color: var(--color-accent-600); }
 .self-start { align-self: flex-start; }
 .ico { flex-shrink: 0; }
 .btn-gap { gap: 10px; }
-.contact-note { margin-top: 10px; color: var(--ink-70); }
+.contact-note { margin-top: 10px; color: var(--ink-label); }
 
 /* ── Responsive ────────────────────────────────────────────────────────── */
 

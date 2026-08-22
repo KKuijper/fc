@@ -158,6 +158,7 @@
     galleryToggle.textContent = state.galleryOpen
       ? 'Show fewer photos'
       : 'See all ' + matching.length + ' photos';
+    markAll();
   }
 
   filterBtns.forEach(function (b) {
@@ -492,6 +493,32 @@
     link.click();
   });
 
+  /* ── Scroll affordance for the sideways-scrolling rows ────────────────── */
+
+  var scrollers = $$('[data-scrollable]');
+
+  function markOverflow(el) {
+    var max = el.scrollWidth - el.clientWidth;
+    if (max <= 1) { el.removeAttribute('data-overflow'); return; }
+    // The gallery carries inline padding that scroll snapping rests against,
+    // so "at the start" is that offset, not zero.
+    var rest = parseFloat(getComputedStyle(el).paddingInlineStart) || 0;
+    var atStart = el.scrollLeft <= rest + 2;
+    var atEnd = el.scrollLeft >= max - 2;
+    el.setAttribute('data-overflow', atStart ? 'end' : atEnd ? 'start' : 'both');
+  }
+
+  function markAll() { scrollers.forEach(markOverflow); }
+
+  scrollers.forEach(function (el) {
+    el.addEventListener('scroll', function () { markOverflow(el); }, { passive: true });
+  });
+  window.addEventListener('resize', markAll);
+  if (window.ResizeObserver) {
+    var ro = new ResizeObserver(markAll);
+    scrollers.forEach(function (el) { ro.observe(el); });
+  }
+
   /* ── First paint ──────────────────────────────────────────────────────── */
 
   bulkTip.textContent = 'Tip: from ' + BULK_AT + ' items you get bulk prices.';
@@ -499,4 +526,5 @@
   renderOccasions();
   renderQuote();
   renderDesigner();
+  markAll();
 }());
