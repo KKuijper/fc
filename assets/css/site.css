@@ -516,14 +516,21 @@ a:hover { color: var(--color-accent-600); }
   .panel-out, .panel-preview { border-left: 0; border-top: var(--rule); }
   .contact-cell { border-right: 0; border-bottom: var(--rule); }
   .contact-cell:last-child { border-bottom: 0; }
+  /* Two rows deep, still scrolling sideways. Columns at 48% put four photos
+     on screen at once and leave the next one just clipped, which reads as
+     "there is more" alongside the edge fade. */
   .gallery {
-    display: flex; grid-template-columns: none;
+    display: grid;
+    grid-auto-flow: column;
+    grid-template-columns: none;
+    grid-template-rows: repeat(2, auto);
+    grid-auto-columns: 48%;
     overflow-x: auto; scroll-snap-type: x mandatory;
     margin-inline: -20px; padding-inline: 20px;
     scrollbar-width: none;
   }
   .gallery::-webkit-scrollbar { display: none; }
-  .gallery > figure { flex: 0 0 72%; scroll-snap-align: start; }
+  .gallery > figure { scroll-snap-align: start; }
   .opt-seg-row { flex-direction: column; align-items: stretch; }
   .opt--seg { justify-content: center; }
   .opt--seg + .opt--seg { margin-left: 0; margin-top: -2px; }
