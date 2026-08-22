@@ -16,7 +16,7 @@
   --color-accent-700: #a35201;
   --color-divider: #0d3049;
   --color-neutral-100: #e9f4fa;
-  --brand-teal: #1a7e99;
+  --brand-teal: #17708a;
   --brand-sky: #8ecbe8;
 
   /* Page-level primitives */
@@ -25,16 +25,29 @@
   --rule: 2px solid var(--color-divider);
   --ink-78: color-mix(in srgb, var(--color-text) 78%, transparent);
   --ink-70: color-mix(in srgb, var(--color-text) 70%, transparent);
-  --ink-60: color-mix(in srgb, var(--color-text) 60%, transparent);
+  /* 60% ink is 3.95:1 on the page ground, under the 4.5:1 that 13px text
+     needs; 68% clears it at 4.9:1 without visibly changing the hierarchy. */
+  --ink-60: color-mix(in srgb, var(--color-text) 68%, transparent);
   --wa: #25d366;
   --wa-hover: #1da851;
+  --wa-dark: #128c7e;
 }
 
 html { scroll-behavior: smooth; }
+
+.skip-link {
+  position: fixed; top: 8px; left: 8px; z-index: 200;
+  transform: translateY(-200%);
+  background: var(--color-text); color: var(--color-bg);
+  padding: 12px 18px; text-decoration: none; font-size: 17px;
+  font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+}
+.skip-link:focus { transform: translateY(0); }
 body { margin: 0; text-wrap: pretty; overflow-x: hidden; }
 a { color: var(--color-accent-700); }
 a:hover { color: var(--color-accent-600); }
 [hidden] { display: none !important; }
+:focus-visible { outline: 2px solid var(--color-accent-600); }
 
 /* ── Layout ────────────────────────────────────────────────────────────── */
 
@@ -59,7 +72,7 @@ a:hover { color: var(--color-accent-600); }
 }
 .t-sub { font-size: 22px; line-height: 26px; letter-spacing: -0.01em; margin: 0; }
 .lede {
-  font-size: 16px; line-height: 28px; max-width: 58ch;
+  font-size: 17px; line-height: 29px; max-width: 58ch;
   color: var(--ink-78); margin: 20px 0 0;
 }
 .note { font-size: 13px; line-height: 20px; margin: 0; color: var(--ink-60); }
@@ -83,10 +96,21 @@ a:hover { color: var(--color-accent-600); }
 
 /* ── Buttons — brand variants on top of .btn ───────────────────────────── */
 
+/* The design system sizes .btn to match .input at 14px. This page wants its
+   buttons to read at body size instead, still in the heading weight. */
+.btn { font-size: 17px; }
+
+/* Contrast: the near-white label the design system puts on the brand orange
+   is 2.5:1. Navy on the same orange is 5.25:1 and keeps the colour vivid, so
+   the hover state lightens rather than darkens to hold the ratio. */
+.btn-primary { color: var(--color-text); }
+.btn-primary:hover { background: var(--color-accent-400); color: var(--color-text); }
+.btn-primary:active { background: var(--color-accent-500); color: var(--color-text); }
+
 .btn-ink { background: var(--color-text); border-color: var(--color-text); color: var(--color-bg); }
 .btn-ink:hover { background: #164468; border-color: #164468; color: var(--color-bg); }
-.btn-wa { background: var(--wa); border-color: var(--wa); color: #fff; }
-.btn-wa:hover { background: var(--wa-hover); border-color: var(--wa-hover); color: #fff; }
+.btn-wa { background: var(--wa); border-color: var(--wa); color: var(--color-text); }
+.btn-wa:hover { background: var(--wa); border-color: var(--wa); color: var(--color-text); filter: brightness(1.08); }
 .btn-nowrap { white-space: nowrap; }
 .btn .ico-inline { margin-left: 10px; flex-shrink: 0; }
 
@@ -133,11 +157,15 @@ a:hover { color: var(--color-accent-600); }
 .nav-brand { display: flex; align-items: center; gap: 12px; }
 .nav-brand img { height: 40px; width: 40px; object-fit: contain; }
 .nav-links { display: flex; align-items: center; gap: var(--space-4); }
+/* Needs to beat `.nav a`, not merely match it: the design system sets
+   .nav a { color: inherit } at 0-1-1, which silently outranked a class-only
+   rule here and left this icon inheriting navy instead of taking its colour. */
 .nav-wa {
   display: flex; align-items: center; justify-content: center;
-  color: var(--wa); text-decoration: none; flex-shrink: 0;
+  text-decoration: none; flex-shrink: 0;
 }
-.nav-wa:hover { color: var(--wa-hover); }
+.nav a.nav-wa { color: var(--wa-dark); }
+.nav a.nav-wa:hover { color: var(--wa-hover); }
 .nav-toggle {
   display: none; align-items: center; justify-content: center;
   width: 44px; height: 44px; padding: 0; background: none;
@@ -159,11 +187,11 @@ a:hover { color: var(--color-accent-600); }
   gap: 42px; align-items: center;
 }
 .hero-title span { display: block; white-space: nowrap; }
-.hero-title .accent { color: var(--color-accent); white-space: normal; }
+.hero-title .accent { color: var(--color-accent-600); white-space: normal; }
 .hero-points {
   list-style: none; margin: 36px 0 0; padding: 0;
   display: flex; flex-direction: column; gap: 14px;
-  font-size: 16px; line-height: 28px; max-width: 58ch;
+  font-size: 17px; line-height: 29px; max-width: 58ch;
 }
 .hero-points li { display: flex; align-items: baseline; gap: 14px; }
 .hero-points li::before {
@@ -224,7 +252,7 @@ a:hover { color: var(--color-accent-600); }
   display: flex; flex-direction: column; gap: 10px;
 }
 .suggestion h3 { line-height: 24px; }
-.suggestion p { font-size: 16px; line-height: 24px; margin: 0; color: var(--ink-78); }
+.suggestion p { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-78); }
 
 /* ── Two-column tool panels (estimate + designer) ──────────────────────── */
 
@@ -309,10 +337,10 @@ a:hover { color: var(--color-accent-600); }
 .service-num {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 16px; line-height: 20px; margin: 0;
-  font-feature-settings: 'tnum' 1; color: var(--color-accent);
+  font-feature-settings: 'tnum' 1; color: var(--color-accent-700);
 }
 .service h3 { font-size: 22px; line-height: 26px; letter-spacing: -0.01em; margin: 0; }
-.service > p:last-child { font-size: 16px; line-height: 24px; margin: 0; color: var(--ink-78); max-width: 44ch; }
+.service > p:last-child { font-size: 17px; line-height: 25px; margin: 0; color: var(--ink-78); max-width: 44ch; }
 
 .methods { margin-top: 28px; }
 .methods-label {
@@ -350,14 +378,14 @@ a:hover { color: var(--color-accent-600); }
 .step-num {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 16px; line-height: 28px; margin: 0;
-  font-feature-settings: 'tnum' 1; color: var(--color-accent);
+  font-feature-settings: 'tnum' 1; color: var(--color-accent-700);
 }
 .step h3 { font-size: 22px; line-height: 28px; letter-spacing: -0.01em; margin: 0; }
-.step > div > p { font-size: 16px; line-height: 26px; margin: 10px 0 0; color: var(--ink-78); max-width: 60ch; }
+.step > div > p { font-size: 17px; line-height: 27px; margin: 10px 0 0; color: var(--ink-78); max-width: 60ch; }
 
 /* ── Reviews ───────────────────────────────────────────────────────────── */
 
-.google-line { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; font-size: 16px; }
+.google-line { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; font-size: 17px; }
 .reviews {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 0 42px; border-top: var(--rule); margin-top: 42px;
@@ -369,7 +397,7 @@ a:hover { color: var(--color-accent-600); }
 .review-head { display: flex; align-items: center; gap: 10px; }
 .review-stars {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: 22px; line-height: 26px; color: var(--color-accent);
+  font-size: 22px; line-height: 26px; color: var(--color-accent-700);
   margin: 0; letter-spacing: 0.06em;
 }
 .review blockquote {
@@ -386,14 +414,14 @@ a:hover { color: var(--color-accent-600); }
 }
 .contact-cell { padding: 28px; border-right: var(--rule); }
 .contact-cell:last-child { border-right: 0; }
-.copy-16 { font-size: 16px; line-height: 24px; margin: 0; }
+.copy-body { font-size: 17px; line-height: 25px; margin: 0; }
 .contact-strong {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
   font-size: 22px; color: var(--color-text); text-decoration: none;
 }
-.contact-mail { font-size: 16px; line-height: 24px; color: var(--color-text); white-space: nowrap; }
+.contact-mail { font-size: 17px; line-height: 25px; color: var(--color-text); }
 .contact-social {
-  font-size: 16px; line-height: 24px; display: inline-flex; align-items: center;
+  font-size: 17px; line-height: 25px; display: inline-flex; align-items: center;
   gap: 10px; color: var(--color-text); text-decoration: none;
 }
 .contact-social:hover { color: var(--color-accent-700); }
@@ -428,10 +456,10 @@ a:hover { color: var(--color-accent-600); }
 .wa-float {
   position: fixed; right: 20px; bottom: 20px; width: 56px; height: 56px;
   display: flex; align-items: center; justify-content: center;
-  background: var(--wa); color: #fff; box-shadow: var(--shadow-md);
+  background: var(--wa); color: var(--color-text); box-shadow: var(--shadow-md);
   z-index: 50; text-decoration: none;
 }
-.wa-float:hover { background: var(--wa-hover); color: #fff; }
+.wa-float:hover { background: var(--wa); color: var(--color-text); filter: brightness(1.08); }
 
 /* ── Small per-section adjustments ─────────────────────────────────────── */
 
