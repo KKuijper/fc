@@ -124,14 +124,14 @@ a:hover { color: var(--color-accent-600); }
 
 .linkbtn {
   align-self: flex-start; background: none; border: 0; padding: 0;
-  font-size: 13px; font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 17px; font-family: var(--font-heading); font-weight: 600;
   color: var(--color-accent-700); cursor: pointer; text-decoration: underline;
 }
 .linkbtn:hover { color: var(--color-accent-600); }
 /* The design's "Remove logo" link is body text, not heading weight. */
 .linkbtn-plain {
   align-self: flex-start; background: none; border: 0; padding: 0;
-  font-size: 13px; color: var(--color-accent-700); cursor: pointer; text-decoration: underline;
+  font-size: 17px; color: var(--color-accent-700); cursor: pointer; text-decoration: underline;
 }
 
 /* ── Option buttons (filters, occasions, products, swatches, segments) ─── */
