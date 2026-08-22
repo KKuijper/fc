@@ -75,8 +75,8 @@ a:hover { color: var(--color-accent-600); }
   font-size: 17px; line-height: 29px; max-width: 58ch;
   color: var(--ink-78); margin: 20px 0 0;
 }
-.note { font-size: 13px; line-height: 20px; margin: 0; color: var(--ink-60); }
-.note-wide { max-width: 58ch; line-height: 24px; margin: 20px 0 0; color: var(--ink-70); }
+.note { font-size: 17px; line-height: 24px; margin: 0; color: var(--ink-60); }
+.note-wide { max-width: 58ch; line-height: 28px; margin: 20px 0 0; color: var(--ink-70); }
 .field-label {
   font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase;
   color: var(--ink-70); margin: 0 0 12px;
@@ -96,8 +96,10 @@ a:hover { color: var(--color-accent-600); }
 
 /* ── Buttons — brand variants on top of .btn ───────────────────────────── */
 
-/* The design system sizes .btn to match .input at 14px. This page wants its
-   buttons to read at body size instead, still in the heading weight. */
+/* Form text and buttons all read at the body size. The design system pairs
+   .btn with .input at 14px; that pairing is preserved, just at 17px. */
+.field > label { font-size: 17px; margin-bottom: 8px; }
+.input { font-size: 17px; }
 .btn { font-size: 17px; }
 
 /* Contrast: the near-white label the design system puts on the brand orange
@@ -130,7 +132,7 @@ a:hover { color: var(--color-accent-600); }
 
 .opt {
   font-family: var(--font-heading); font-weight: var(--font-heading-weight);
-  font-size: 13px; padding: 10px 16px; cursor: pointer; white-space: nowrap;
+  font-size: 17px; padding: 10px 16px; cursor: pointer; white-space: nowrap;
   background: #fff; color: var(--color-text); border: var(--rule);
 }
 .opt[aria-pressed='true'] { background: var(--color-text); color: #fff; }
@@ -277,8 +279,8 @@ a:hover { color: var(--color-accent-600); }
 
 .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .size-grid .input { padding-inline: 10px; }
-.size-total { font-size: 13px; line-height: 20px; margin: 14px 0 0; font-feature-settings: 'tnum' 1; }
-.tip { font-size: 13px; line-height: 20px; margin: 0; color: var(--color-accent-700); }
+.size-total { font-size: 17px; line-height: 24px; margin: 14px 0 0; font-feature-settings: 'tnum' 1; }
+.tip { font-size: 17px; line-height: 24px; margin: 0; color: var(--color-accent-700); }
 
 .readouts { display: flex; flex-direction: column; gap: 20px; margin: 0; }
 .readout {
@@ -317,7 +319,7 @@ a:hover { color: var(--color-accent-600); }
   font-size: 16px; line-height: 18px; text-align: center;
   margin: 0; word-break: break-word;
 }
-.preview-empty { font-size: 13px; line-height: 18px; text-align: center; margin: 0; }
+.preview-empty { font-size: 17px; line-height: 22px; text-align: center; margin: 0; }
 .preview-logo { max-width: 100%; max-height: 70%; object-fit: contain; }
 .preview-actions {
   display: flex; flex-direction: column; gap: 12px;
@@ -349,7 +351,7 @@ a:hover { color: var(--color-accent-600); }
 }
 .method-list { display: flex; flex-wrap: wrap; gap: 8px; list-style: none; margin: 0; padding: 0; }
 .method-list li {
-  font-size: 13px; line-height: 20px; padding: 6px 12px;
+  font-size: 17px; line-height: 24px; padding: 6px 12px;
   border: var(--rule); white-space: nowrap;
 }
 
@@ -499,6 +501,9 @@ a:hover { color: var(--color-accent-600); }
   }
   .gallery::-webkit-scrollbar { display: none; }
   .gallery > figure { flex: 0 0 72%; scroll-snap-align: start; }
+  .opt-seg-row { flex-direction: column; align-items: stretch; }
+  .opt--seg { justify-content: center; }
+  .opt--seg + .opt--seg { margin-left: 0; margin-top: -2px; }
   .size-grid { grid-template-columns: repeat(2, 1fr); }
   .swatch { width: 44px; height: 44px; }
   .wa-float { bottom: 16px; right: 16px; }
