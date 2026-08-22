@@ -25,8 +25,18 @@ const before = readFileSync(page, 'utf8');
 let html = before;
 let missing = false;
 
+// Hash the normalised text, not the raw bytes. With core.autocrlf on, a
+// checkout rewrites these files to CRLF while anything that writes them
+// directly leaves LF, and hashing the bytes would flip the stamp back and forth
+// for identical content. Pages serves the committed blob, which is LF.
+const contentHash = (path) =>
+  createHash('sha256')
+    .update(readFileSync(path, 'utf8').replace(/\r\n/g, '\n'))
+    .digest('hex')
+    .slice(0, 8);
+
 for (const rel of assets) {
-  const hash = createHash('sha256').update(readFileSync(join(root, rel))).digest('hex').slice(0, 8);
+  const hash = contentHash(join(root, rel));
   // the path, with or without a stamp already on it
   const re = new RegExp(rel.replace(/\./g, '\\.') + '(\\?v=[0-9a-f]+)?', 'g');
   let refs = 0;
