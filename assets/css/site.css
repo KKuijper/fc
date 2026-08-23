@@ -411,6 +411,10 @@ a:hover { color: var(--color-accent-600); }
 /* ── Reviews ───────────────────────────────────────────────────────────── */
 
 .google-line { display: flex; align-items: center; gap: 10px; margin: 20px 0 0; font-size: 17px; }
+/* strong defaults to 700, which is not one of the three weights loaded, so the
+   browser would pick a face for us. 600 matches the emphasis tier used for
+   buttons and links. */
+.google-line strong { font-weight: 600; }
 .reviews {
   display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
   gap: 0 42px; border-top: var(--rule); margin-top: 42px;
