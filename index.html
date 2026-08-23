@@ -3,6 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Google tag (gtag.js) - Google Ads AW-17713141793 -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-17713141793"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'AW-17713141793');
+</script>
 <title>Custom T-Shirt &amp; Uniform Printing in Macassar, Cape Town</title>
 <meta name="description" content="T-shirt, cap, mug and sticker printing from our own workshop in Macassar, Cape Town. Bulk uniforms from 20 items, small orders ready in 3 working days.">
 <link rel="canonical" href="https://www.freestyleconcepts.co.za/">
@@ -870,5 +878,46 @@
 </a>
 
 <script src="assets/js/site.js?v=d984cd87" defer></script>
+<!-- Google Ads conversion tracking. Every CTA on this page opens WhatsApp,
+     so the conversions below are click events, not page loads. Values are in
+     EUR because the Ads account is billed in EUR; the ratio between them is
+     what steers Smart Bidding. -->
+<script>
+(function () {
+  'use strict';
+
+  var CONV = {
+    quote:  { label: 'AW-17713141793/ZZEQCOeMr-YcEKGwpP5B', value: 10, name: 'wa_quote_builder' },
+    design: { label: 'AW-17713141793/MKQ0CIG5seYcEKGwpP5B', value: 10, name: 'wa_design_tool'   },
+    wa:     { label: 'AW-17713141793/yxcACJuZtOYcEKGwpP5B', value:  4, name: 'wa_general'       },
+    call:   { label: 'AW-17713141793/Ul5nCJ6ZtOYcEKGwpP5B', value:  4, name: 'phone_click'      },
+    mail:   { label: 'AW-17713141793/qQpJCKGZtOYcEKGwpP5B', value:  1, name: 'email_click'      }
+  };
+
+  var fired = {};
+
+  function report(key) {
+    var c = CONV[key];
+    if (!c || fired[key]) return;
+    fired[key] = true;
+    gtag('event', 'conversion', { send_to: c.label, value: c.value, currency: 'EUR' });
+    gtag('event', c.name, { value: c.value, currency: 'EUR' });
+  }
+
+  document.addEventListener('click', function (e) {
+    var el = e.target.closest ? e.target.closest('a, button') : null;
+    if (!el) return;
+
+    if (el.matches('[data-quote-cta]'))  return report('quote');
+    if (el.matches('[data-design-cta]')) return report('design');
+    if (el.matches('[data-wa-link]'))    return report('wa');
+
+    var href = el.getAttribute('href') || '';
+    if (href.indexOf('wa.me/') > -1)   return report('wa');
+    if (href.indexOf('tel:') === 0)    return report('call');
+    if (href.indexOf('mailto:') === 0) return report('mail');
+  }, true);
+})();
+</script>
 </body>
 </html>
