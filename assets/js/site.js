@@ -212,9 +212,16 @@
     return {
       id: o.value,
       label: o.textContent.trim(),
-      lo: Number(o.dataset.lo), hi: Number(o.dataset.hi),
-      blo: Number(o.dataset.blo), bhi: Number(o.dataset.bhi)
+      lo: Number(o.dataset.lo), hi: Number(o.dataset.hi)
     };
+  }
+
+  /* Bulk is a flat 5 percent from BULK_AT items, not a separate price band. */
+  function bulkPrice(amount) { return Math.round(amount * 0.95); }
+
+  /* A mug has one price rather than a range, so do not print "R120 to R120". */
+  function priceText(lo, hi) {
+    return lo === hi ? rand(lo) : rand(lo) + '\u2013' + rand(hi);
   }
 
   function sizeCount(name) {
@@ -233,8 +240,8 @@
     var item = currentItem();
     var qty = currentQty();
     var bulk = qty >= BULK_AT;
-    var lo = bulk ? item.blo : item.lo;
-    var hi = bulk ? item.bhi : item.hi;
+    var lo = bulk ? bulkPrice(item.lo) : item.lo;
+    var hi = bulk ? bulkPrice(item.hi) : item.hi;
 
     simpleBlock.hidden = state.useSizes;
     sizeBlock.hidden = !state.useSizes;
@@ -244,15 +251,15 @@
     sizeTotal.textContent = qty;
 
     priceRows.forEach(function (r) { r.hidden = !SITE.showPrices; });
-    perItemEl.textContent = rand(lo) + '–' + rand(hi);
-    totalEl.textContent = rand(lo * qty) + '–' + rand(hi * qty);
+    perItemEl.textContent = priceText(lo, hi);
+    totalEl.textContent = priceText(lo * qty, hi * qty);
     readyEl.textContent = readyBy(bulk ? 7 : 3);
     turnNoteEl.textContent = bulk
       ? 'Bulk orders are ready within 7 working days.'
       : 'Small orders are ready in 3 working days.';
     bulkTip.hidden = !(CLOTHING.indexOf(item.id) !== -1 && qty > 4 && qty < BULK_AT && !state.useSizes);
 
-    var priceBit = SITE.showPrices ? ' (site estimate ' + rand(lo) + '–' + rand(hi) + ' each)' : '';
+    var priceBit = SITE.showPrices ? ' (site estimate ' + priceText(lo, hi) + ' each)' : '';
     var filled = SIZES.filter(function (s) { return sizeCount(s) > 0; })
       .map(function (s) { return s + '×' + sizeCount(s); });
     var sizeBit = state.useSizes && filled.length ? ' Sizes: ' + filled.join(', ') + '.' : '';
