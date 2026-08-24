@@ -206,14 +206,51 @@
   var readyEl = $('[data-ready-by]');
   var turnNoteEl = $('[data-turn-note]');
   var quoteCta = $('[data-quote-cta]');
+  var printOptions = $('[data-print-options]');
+  var printSize = $('[data-print-size]');
+  var printColours = $('[data-print-colours]');
+
+  /* Stephen's print prices, by size and number of colours. A logo-size print
+     is not offered in full colour. */
+  var PRINTS = {
+    logo: { '1': 35, '2': 45 },
+    a5:   { '1': 45, '2': 55, c: 65 },
+    a4:   { '1': 70, '2': 80, c: 95 }
+  };
+  var SIZE_ORDER = ['logo', 'a5', 'a4'];
+  /* Wording for the WhatsApp message. Scraping the option labels produced
+     "a a4 print"; these read the way a person would say it. */
+  var PRINT_WORDS = {
+    logo: 'a logo-size print', a5: 'an A5 print', a4: 'an A4 print',
+    '1': 'one colour', '2': 'two colours', c: 'full colour'
+  };
 
   function currentItem() {
     var o = itemSelect.selectedOptions[0] || itemSelect.options[0];
+    var garment = o.dataset.garment;
     return {
       id: o.value,
       label: o.textContent.trim(),
+      garment: garment === undefined ? null : Number(garment),
+      maxPrint: o.dataset.maxPrint || 'a4',
       lo: Number(o.dataset.lo), hi: Number(o.dataset.hi)
     };
+  }
+
+  /* Only offer print sizes the item can physically take, and only offer full
+     colour where it exists. Clamp the selection if the current one drops away. */
+  function syncPrintOptions(item) {
+    var cap = SIZE_ORDER.indexOf(item.maxPrint);
+    $$('option', printSize).forEach(function (o) {
+      o.hidden = SIZE_ORDER.indexOf(o.value) > cap;
+    });
+    if (SIZE_ORDER.indexOf(printSize.value) > cap) printSize.value = item.maxPrint;
+    var table = PRINTS[printSize.value];
+    $$('option', printColours).forEach(function (o) {
+      o.hidden = !(o.value in table);
+    });
+    if (!(printColours.value in table)) printColours.value = '1';
+    return table[printColours.value];
   }
 
   /* Bulk is a flat 5 percent from BULK_AT items, not a separate price band. */
@@ -240,8 +277,20 @@
     var item = currentItem();
     var qty = currentQty();
     var bulk = qty >= BULK_AT;
-    var lo = bulk ? bulkPrice(item.lo) : item.lo;
-    var hi = bulk ? bulkPrice(item.hi) : item.hi;
+
+    /* A garment is priced exactly: the blank plus the print they chose. */
+    var byPrint = item.garment !== null;
+    printOptions.hidden = !byPrint;
+    var lo, hi, printLabel = '';
+    if (byPrint) {
+      var print = syncPrintOptions(item);
+      lo = hi = item.garment + print;
+      printLabel = ' with ' + PRINT_WORDS[printSize.value] + ' in ' + PRINT_WORDS[printColours.value];
+    } else {
+      lo = item.lo;
+      hi = item.hi;
+    }
+    if (bulk) { lo = bulkPrice(lo); hi = bulkPrice(hi); }
 
     simpleBlock.hidden = state.useSizes;
     sizeBlock.hidden = !state.useSizes;
@@ -264,12 +313,14 @@
       .map(function (s) { return s + '×' + sizeCount(s); });
     var sizeBit = state.useSizes && filled.length ? ' Sizes: ' + filled.join(', ') + '.' : '';
     quoteCta.href = waHref(
-      "Hi Freestyle Concepts! I'd like a quote for " + qty + ' × ' + item.label + priceBit + '.' +
-      sizeBit + ' When could this be ready?'
+      "Hi Freestyle Concepts! I'd like a quote for " + qty + ' × ' + item.label + printLabel +
+      priceBit + '.' + sizeBit + ' When could this be ready?'
     );
   }
 
   itemSelect.addEventListener('change', renderQuote);
+  printSize.addEventListener('change', renderQuote);
+  printColours.addEventListener('change', renderQuote);
   ['input', 'change'].forEach(function (ev) { qtyInput.addEventListener(ev, renderQuote); });
   sizeInputs.forEach(function (input) {
     ['input', 'change'].forEach(function (ev) {
