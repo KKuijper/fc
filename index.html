@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="assets/css/modernist.css?v=125023d6">
-<link rel="stylesheet" href="assets/css/site.css?v=32a66fb6">
+<link rel="stylesheet" href="assets/css/site.css?v=4402c490">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -592,22 +592,18 @@
         <div class="panel">
           <div class="panel-in">
             <div class="field">
-              <label for="qb-item">What do you need?</label>
-              <select id="qb-item" class="input" data-item>
-                <optgroup label="We supply the item and print it">
-                  <option value="tshirt" data-garment="75" data-max-print="a4" data-noun="t-shirt" selected>T-shirt</option>
-                  <option value="polo" data-garment="125" data-max-print="a4" data-noun="polo shirt">Polo shirt</option>
-                  <option value="hoodie" data-garment="350" data-max-print="a4" data-noun="hoodie">Hoodie / sweater</option>
-                  <option value="cap" data-garment="65" data-max-print="logo" data-prints="1:55,2:55" data-noun="cap">Cap / beanie</option>
-                  <option value="mug" data-lo="120" data-hi="120" data-noun="mug">Mug (sublimation)</option>
-                  <option value="baby" data-garment="90" data-max-print="a5" data-prints="1:30,2:40,c:50" data-noun="baby or kids garment">Baby / kids wear</option>
-                  <option value="sticker" data-lo="30" data-hi="80" data-noun="sticker">Vinyl sticker</option>
-                  <option value="board" data-lo="350" data-hi="650" data-noun="board">Welcome / event board</option>
-                </optgroup>
-                <optgroup label="You supply the item, we only print">
-                  <option value="own" data-garment="0" data-max-print="a4" data-noun="garment">Print on your own garment</option>
-                </optgroup>
-              </select>
+              <p class="field-label" id="qb-item-label">What do you need?</p>
+              <div class="item-grid" role="group" aria-labelledby="qb-item-label" data-item-grid>
+                <button type="button" class="opt opt--tile" data-item-id="tshirt" data-garment="75" data-max-print="a4" data-noun="t-shirt" aria-pressed="true">T-shirt</button>
+                <button type="button" class="opt opt--tile" data-item-id="polo" data-garment="125" data-max-print="a4" data-noun="polo shirt" aria-pressed="false">Polo shirt</button>
+                <button type="button" class="opt opt--tile" data-item-id="hoodie" data-garment="350" data-max-print="a4" data-noun="hoodie" aria-pressed="false">Hoodie / sweater</button>
+                <button type="button" class="opt opt--tile" data-item-id="cap" data-garment="65" data-max-print="logo" data-prints="1:55,2:55" data-noun="cap" aria-pressed="false">Cap / beanie</button>
+                <button type="button" class="opt opt--tile" data-item-id="mug" data-lo="120" data-hi="120" data-noun="mug" aria-pressed="false">Mug</button>
+                <button type="button" class="opt opt--tile" data-item-id="baby" data-garment="90" data-max-print="a5" data-prints="1:30,2:40,c:50" data-noun="baby or kids garment" aria-pressed="false">Baby / kids wear</button>
+                <button type="button" class="opt opt--tile" data-item-id="sticker" data-lo="30" data-hi="80" data-noun="sticker" aria-pressed="false">Vinyl sticker</button>
+                <button type="button" class="opt opt--tile" data-item-id="board" data-lo="350" data-hi="650" data-noun="board" aria-pressed="false">Welcome board</button>
+                <button type="button" class="opt opt--tile" data-item-id="own" data-garment="0" data-max-print="a4" data-noun="garment" aria-pressed="false">Your own garment</button>
+              </div>
             </div>
 
             <div data-print-options>
@@ -630,7 +626,16 @@
             </div>
             <div class="field" data-simple-mode>
               <label for="qb-qty">How many?</label>
-              <input id="qb-qty" class="input" type="number" min="1" max="2000" value="20" data-qty>
+              <div class="qty-row">
+                <div class="qty-chips" role="group" aria-label="Quick-pick a quantity" data-qty-chips>
+                  <button type="button" class="opt opt--chip" data-qty-set="1" aria-pressed="false">1</button>
+                  <button type="button" class="opt opt--chip" data-qty-set="5" aria-pressed="false">5</button>
+                  <button type="button" class="opt opt--chip" data-qty-set="10" aria-pressed="false">10</button>
+                  <button type="button" class="opt opt--chip" data-qty-set="20" aria-pressed="true">20</button>
+                  <button type="button" class="opt opt--chip" data-qty-set="50" aria-pressed="false">50</button>
+                </div>
+                <input id="qb-qty" class="input input--qty" type="number" min="1" max="2000" value="20" data-qty aria-label="Or type an exact quantity">
+              </div>
             </div>
 
             <div data-size-mode hidden>
@@ -662,6 +667,10 @@
               <div class="readout" data-price-row>
                 <dt>Total, estimate</dt>
                 <dd class="accent tnum" data-total>R1 800–R2 800</dd>
+              </div>
+              <div class="readout" data-savings-row hidden>
+                <dt>Bulk discount, you save</dt>
+                <dd class="accent tnum" data-savings>—</dd>
               </div>
               <div class="readout">
                 <dt>Ready by</dt>
@@ -1010,11 +1019,19 @@
   </footer>
 </div>
 
+<div class="quote-bar" data-quote-bar>
+  <div class="quote-bar-info">
+    <p class="quote-bar-price"><span class="tnum" data-bar-total>—</span><span class="quote-bar-per tnum" data-bar-per></span></p>
+    <p class="quote-bar-ready" data-bar-ready></p>
+  </div>
+  <a class="btn btn-primary btn-nowrap" data-quote-cta href="https://wa.me/27655935067">Send<svg class="ico-inline" width="16" height="16" aria-hidden="true"><use href="#i-wa"/></svg></a>
+</div>
+
 <a class="wa-float" data-wa-link href="https://wa.me/27655935067" aria-label="Chat on WhatsApp">
   <svg width="28" height="28" aria-hidden="true"><use href="#i-wa"/></svg>
 </a>
 
-<script src="assets/js/site.js?v=9f88d00b" defer></script>
+<script src="assets/js/site.js?v=21594874" defer></script>
 <!-- Google Ads conversion tracking. Every CTA on this page opens WhatsApp,
      so the conversions below are click events, not page loads. Values are in
      EUR because the Ads account is billed in EUR; the ratio between them is

@@ -3,8 +3,8 @@
 
    Ported from the design canvas logic (Freestyle Concepts.dc.html) to plain
    DOM code. Content that repeats lives in index.html; this file only reads,
-   toggles and computes. Pricing sits on the <option> elements as data-*
-   attributes so the price list has one home, in the markup.
+   toggles and computes. Pricing sits on the estimator's item buttons as
+   data-* attributes so the price list has one home, in the markup.
    ══════════════════════════════════════════════════════════════════════ */
 
 (function () {
@@ -70,6 +70,7 @@
     filter: 'all',
     galleryOpen: false,
     occasion: 'birthday',
+    item: 'tshirt',
     useSizes: false,
     sizes: {},
     product: 'tshirt',
@@ -193,7 +194,8 @@
 
   /* ── Instant estimate ─────────────────────────────────────────────────── */
 
-  var itemSelect = $('[data-item]');
+  var itemBtns = $$('[data-item-grid] button');
+  var qtyChips = $$('[data-qty-chips] button');
   var qtyInput = $('[data-qty]');
   var simpleBlock = $('[data-simple-mode]');
   var sizeBlock = $('[data-size-mode]');
@@ -204,11 +206,17 @@
   var priceRows = $$('[data-price-row]');
   var perItemEl = $('[data-per-item]');
   var totalEl = $('[data-total]');
+  var savingsRow = $('[data-savings-row]');
+  var savingsEl = $('[data-savings]');
   var readyEl = $('[data-ready-by]');
   var turnNoteEl = $('[data-turn-note]');
   var perItemLabelEl = $('[data-per-item-label]');
   var coversEl = $('[data-covers]');
-  var quoteCta = $('[data-quote-cta]');
+  var quoteCtas = $$('[data-quote-cta]');
+  var quoteBar = $('[data-quote-bar]');
+  var barTotal = $('[data-bar-total]');
+  var barPer = $('[data-bar-per]');
+  var barReady = $('[data-bar-ready]');
   var printOptions = $('[data-print-options]');
   var printSize = $('[data-print-size]');
   var printColours = $('[data-print-colours]');
@@ -241,16 +249,16 @@
   }
 
   function currentItem() {
-    var o = itemSelect.selectedOptions[0] || itemSelect.options[0];
-    var garment = o.dataset.garment;
+    var b = itemBtns.filter(function (x) { return x.dataset.itemId === state.item; })[0] || itemBtns[0];
+    var garment = b.dataset.garment;
     return {
-      id: o.value,
-      label: o.textContent.trim(),
+      id: b.dataset.itemId,
+      label: b.textContent.trim(),
       garment: garment === undefined ? null : Number(garment),
-      noun: o.dataset.noun || 'item',
-      maxPrint: o.dataset.maxPrint || 'a4',
-      prints: flatPrints(o),
-      lo: Number(o.dataset.lo), hi: Number(o.dataset.hi)
+      noun: b.dataset.noun || 'item',
+      maxPrint: b.dataset.maxPrint || 'a4',
+      prints: flatPrints(b),
+      lo: Number(b.dataset.lo), hi: Number(b.dataset.hi)
     };
   }
 
@@ -335,6 +343,7 @@
       lo = item.lo;
       hi = item.hi;
     }
+    var fullLo = lo, fullHi = hi;
     if (bulk) { lo = bulkPrice(lo); hi = bulkPrice(hi); }
 
     simpleBlock.hidden = state.useSizes;
@@ -344,28 +353,66 @@
       : 'Enter a size breakdown instead';
     sizeTotal.textContent = qty;
 
+    setPressed(itemBtns, function (b) { return b.dataset.itemId === item.id; });
+    setPressed(qtyChips, function (b) { return !state.useSizes && Number(b.dataset.qtySet) === qty; });
+
     priceRows.forEach(function (r) { r.hidden = !SITE.showPrices; });
     perItemLabelEl.textContent = perItemLabel(item);
     coversEl.textContent = coversText(item, print, bulk);
     perItemEl.textContent = priceText(lo, hi);
     totalEl.textContent = priceText(lo * qty, hi * qty);
-    readyEl.textContent = readyBy(bulk ? 7 : 3);
+    var ready = readyBy(bulk ? 7 : 3);
+    readyEl.textContent = ready;
     turnNoteEl.textContent = bulk
       ? 'Bulk orders are ready within 7 working days.'
       : 'Small orders are ready in 3 working days.';
-    bulkTip.hidden = !(CLOTHING.indexOf(item.id) !== -1 && qty > 4 && qty < BULK_AT && !state.useSizes);
+
+    /* The 5% off bulk orders, shown as rands rather than a percentage: what
+       you save once you are there, what it would take when you are close. */
+    var saveLo = (fullLo - lo) * qty;
+    var saveHi = (fullHi - hi) * qty;
+    savingsRow.hidden = !(SITE.showPrices && bulk && saveLo > 0);
+    if (!savingsRow.hidden) savingsEl.textContent = priceText(saveLo, saveHi);
+    var nearBulk = CLOTHING.indexOf(item.id) !== -1 && qty > 4 && qty < BULK_AT && !state.useSizes;
+    if (nearBulk && SITE.showPrices) {
+      bulkTip.textContent = 'Tip: from ' + BULK_AT + ' items the price drops to '
+        + priceText(bulkPrice(fullLo), bulkPrice(fullHi)) + ' each instead of '
+        + priceText(fullLo, fullHi) + '.';
+    } else {
+      bulkTip.textContent = 'Tip: from ' + BULK_AT + ' items you get bulk prices.';
+    }
+    bulkTip.hidden = !nearBulk;
+
+    if (quoteBar) {
+      barTotal.textContent = SITE.showPrices ? priceText(lo * qty, hi * qty) : '';
+      barPer.textContent = SITE.showPrices && qty > 1 ? priceText(lo, hi) + ' each' : '';
+      barReady.textContent = 'Ready by ' + ready;
+    }
 
     var priceBit = SITE.showPrices ? ' (site estimate ' + priceText(lo, hi) + ' each)' : '';
     var filled = SIZES.filter(function (s) { return sizeCount(s) > 0; })
       .map(function (s) { return s + '×' + sizeCount(s); });
     var sizeBit = state.useSizes && filled.length ? ' Sizes: ' + filled.join(', ') + '.' : '';
-    quoteCta.href = waHref(
+    var ctaHref = waHref(
       "Hi Freestyle Concepts! I'd like a quote for " + qty + ' × ' + item.label + printLabel +
       priceBit + '.' + sizeBit + ' When could this be ready?'
     );
+    quoteCtas.forEach(function (a) { a.href = ctaHref; });
   }
 
-  itemSelect.addEventListener('change', renderQuote);
+  itemBtns.forEach(function (b) {
+    b.addEventListener('click', function () {
+      state.item = b.dataset.itemId;
+      renderQuote();
+    });
+  });
+  qtyChips.forEach(function (b) {
+    b.addEventListener('click', function () {
+      qtyInput.value = b.dataset.qtySet;
+      state.useSizes = false;
+      renderQuote();
+    });
+  });
   printSize.addEventListener('change', renderQuote);
   printColours.addEventListener('change', renderQuote);
   ['input', 'change'].forEach(function (ev) { qtyInput.addEventListener(ev, renderQuote); });
@@ -384,10 +431,24 @@
 
   /* Presets from the occasion finder and the bulk section. */
   function applyPreset(itemId, qty, useSizes) {
-    if (itemId) itemSelect.value = itemId;
+    if (itemId) state.item = itemId;
     if (qty != null) qtyInput.value = qty;
     state.useSizes = !!useSizes;
     renderQuote();
+  }
+
+  /* On a phone the outcome sits below the form, so a change to the inputs
+     happens out of sight of the price. A slim fixed bar carries the total,
+     the ready-by date and the send button while the estimator is on screen;
+     the CSS only shows it on narrow viewports. */
+  var quoteSection = $('#quote');
+  if (quoteBar && quoteSection && 'IntersectionObserver' in window) {
+    new IntersectionObserver(function (entries) {
+      /* Fast scrolling can queue several entries; only the newest counts. */
+      var on = entries[entries.length - 1].isIntersecting;
+      quoteBar.classList.toggle('quote-bar--on', on);
+      document.body.classList.toggle('quote-bar-open', on);
+    }, { rootMargin: '-120px 0px -80px 0px' }).observe(quoteSection);
   }
 
   $$('[data-preset-item]').forEach(function (a) {

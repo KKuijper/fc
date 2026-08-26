@@ -300,6 +300,16 @@ a:hover { color: var(--color-accent-600); }
   align-items: center; justify-content: center; gap: 28px;
 }
 
+.item-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.item-grid .opt--tile {
+  padding: 12px 6px; font-size: 15px; line-height: 19px;
+  white-space: normal; text-align: center;
+}
+
+.qty-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: stretch; }
+.qty-chips { display: flex; flex-wrap: wrap; gap: 8px; }
+.input--qty { width: 92px; flex: 1 1 92px; }
+
 .size-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
 .size-grid .input { padding-inline: 10px; }
 .size-total { font-size: 17px; line-height: 24px; margin: 14px 0 0; font-feature-settings: 'tnum' 1; }
@@ -324,6 +334,25 @@ a:hover { color: var(--color-accent-600); }
   color: var(--ink-label); border-left: 3px solid var(--color-accent); padding-left: 12px;
 }
 .panel-out .btn-block { margin-top: auto; }
+
+/* Fixed mobile bar mirroring the estimator's outcome; the JS switches it on
+   while the estimator section is in view, the 760px media query below is
+   what actually lets it show. */
+.quote-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 60;
+  display: none; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 10px 16px calc(10px + env(safe-area-inset-bottom));
+  background: #fff; border-top: var(--rule);
+}
+.quote-bar-info { min-width: 0; }
+.quote-bar-price {
+  margin: 0; font-family: var(--font-heading); font-weight: var(--font-heading-weight);
+  font-size: 19px; color: var(--color-accent-700);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.quote-bar-per { margin-left: 8px; font-size: 13px; color: var(--ink-label); font-family: var(--font-body, inherit); font-weight: 400; }
+.quote-bar-ready { margin: 2px 0 0; font-size: 13px; line-height: 17px; color: var(--ink-label); }
+.quote-bar .btn { flex-shrink: 0; }
 
 /* ── Live designer ─────────────────────────────────────────────────────── */
 
@@ -545,6 +574,9 @@ a:hover { color: var(--color-accent-600); }
   .size-grid { grid-template-columns: repeat(2, 1fr); }
   .swatch { width: 44px; height: 44px; }
   .wa-float { bottom: 16px; right: 16px; }
+  .quote-bar--on { display: flex; }
+  body.quote-bar-open .wa-float { display: none; }
+  .item-grid { grid-template-columns: repeat(2, 1fr); }
   .gallery-foot { flex-direction: column; align-items: flex-start; }
   .gallery-foot .btn { width: 100%; }
   .stats-grid { grid-template-columns: 1fr 1fr; gap: 32px 24px; }
