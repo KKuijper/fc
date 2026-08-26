@@ -61,8 +61,9 @@ Screen printing is not one of the methods offered.
 
 A garment price plus a print price, except mugs which are one price.
 
-Garments: round-neck t-shirt R75, golfer or polo R125, or bring your own
-garment and pay for the printing only.
+Garments: round-neck t-shirt R75, golfer or polo R125, hoodie or sweater R350,
+cap R65, baby or kids wear R90, or bring your own garment and pay for the
+printing only.
 
 Printing, by size and number of colours:
 
@@ -72,7 +73,11 @@ Printing, by size and number of colours:
 | A5 | R45 | R55 | R65 |
 | A4 | R70 | R80 | R95 |
 
-Mugs are R120 including the print. Orders of 20 items or more get 5 percent off.
+Hoodies and sweaters print at those same rates. Two items have their own flat
+print price, whatever the print size: a baby or kids vest is R30 in one colour,
+R40 in two colours and R50 for a cartoon or photo; a cap is R55, which makes it
+R120 with the print. Mugs are R120 including the print. Orders of 20 items or
+more get 5 percent off.
 
 ## Indicative prices
 
@@ -84,10 +89,10 @@ quote is confirmed on WhatsApp.
 | --- | --- | --- |
 | T-shirt, incl. print | R110 to R170 | R105 to R162 |
 | Polo shirt | R160 to R220 | R152 to R209 |
-| Hoodie / sweater | R295 to R355 | R280 to R337 |
-| Cap / beanie | R115 to R125 | R109 to R119 |
+| Hoodie / sweater | R385 to R445 | R366 to R423 |
+| Cap / beanie | R120 | R114 |
 | Mug (sublimation) | R120 | R114 |
-| Baby / kids wear | R125 to R155 | R119 to R147 |
+| Baby / kids wear | R120 to R140 | R114 to R133 |
 | Vinyl sticker | R30 to R80 | R29 to R76 |
 | Welcome / event board | R350 to R650 | R333 to R618 |
 | Print on your own garment | R35 to R95 | R33 to R90 |

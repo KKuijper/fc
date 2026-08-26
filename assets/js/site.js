@@ -225,6 +225,18 @@
     '1': 'one colour', '2': 'two colours', c: 'full colour'
   };
 
+  /* Baby wear and caps are printed at their own flat rate, the same whatever
+     the print size, written on the option as data-prints="1:30,2:40,c:50". */
+  function flatPrints(o) {
+    if (!o.dataset.prints) return null;
+    var table = {};
+    o.dataset.prints.split(',').forEach(function (pair) {
+      var bits = pair.split(':');
+      table[bits[0].trim()] = Number(bits[1]);
+    });
+    return table;
+  }
+
   function currentItem() {
     var o = itemSelect.selectedOptions[0] || itemSelect.options[0];
     var garment = o.dataset.garment;
@@ -233,6 +245,7 @@
       label: o.textContent.trim(),
       garment: garment === undefined ? null : Number(garment),
       maxPrint: o.dataset.maxPrint || 'a4',
+      prints: flatPrints(o),
       lo: Number(o.dataset.lo), hi: Number(o.dataset.hi)
     };
   }
@@ -245,7 +258,7 @@
       o.hidden = SIZE_ORDER.indexOf(o.value) > cap;
     });
     if (SIZE_ORDER.indexOf(printSize.value) > cap) printSize.value = item.maxPrint;
-    var table = PRINTS[printSize.value];
+    var table = item.prints || PRINTS[printSize.value];
     $$('option', printColours).forEach(function (o) {
       o.hidden = !(o.value in table);
     });
