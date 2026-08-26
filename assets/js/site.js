@@ -22,6 +22,7 @@
   var GALLERY_PAGE = 8;      // photos shown before "See all"
   var SIZES = ['Kids', 'XS', 'S', 'M', 'L', 'XL', '2XL', '3XL'];
   var CLOTHING = ['tshirt', 'polo', 'hoodie', 'cap', 'baby', 'own'];
+  var SELF_CONTAINED = ['sticker', 'board'];  // the print is the whole product
 
   /* Mock-up shapes: `d` is the garment outline, `detail` the seam lines,
      `box` the printable area as [left, top, width, height] in % of the
@@ -205,6 +206,8 @@
   var totalEl = $('[data-total]');
   var readyEl = $('[data-ready-by]');
   var turnNoteEl = $('[data-turn-note]');
+  var perItemLabelEl = $('[data-per-item-label]');
+  var coversEl = $('[data-covers]');
   var quoteCta = $('[data-quote-cta]');
   var printOptions = $('[data-print-options]');
   var printSize = $('[data-print-size]');
@@ -244,6 +247,7 @@
       id: o.value,
       label: o.textContent.trim(),
       garment: garment === undefined ? null : Number(garment),
+      noun: o.dataset.noun || 'item',
       maxPrint: o.dataset.maxPrint || 'a4',
       prints: flatPrints(o),
       lo: Number(o.dataset.lo), hi: Number(o.dataset.hi)
@@ -265,6 +269,33 @@
     if (!(printColours.value in table)) printColours.value = '1';
     return table[printColours.value];
   }
+
+  /* Whether the physical item is in the price is the thing people get wrong,
+     so both the readout label and the line under it say it outright. Only
+     "print on your own garment" is printing alone; everything else is the
+     blank plus the print. */
+  function perItemLabel(item) {
+    if (item.id === 'own') return 'Per item, printing only';
+    if (SELF_CONTAINED.indexOf(item.id) !== -1) return 'Per ' + item.noun + ', all in';
+    return 'Per item, item + print';
+  }
+
+  function coversText(item, print, bulk) {
+    if (item.id === 'own') {
+      return 'You bring the garment and we print it, so this is the printing alone. '
+        + 'Do not have garments? Pick any item above instead and we supply those too.';
+    }
+    if (SELF_CONTAINED.indexOf(item.id) !== -1) {
+      return 'We make the ' + item.noun + ' itself, printed and finished. '
+        + 'Nothing for you to supply.';
+    }
+    var lead = 'We supply the ' + item.noun + ' and print it, both in the price. ';
+    if (!SITE.showPrices || item.garment === null || !print) return lead.trim();
+    return lead + capitalise(item.noun) + ' ' + rand(item.garment) + ' + print ' + rand(print)
+      + (bulk ? ', less the 5% bulk discount.' : '.');
+  }
+
+  function capitalise(word) { return word.charAt(0).toUpperCase() + word.slice(1); }
 
   /* Bulk is a flat 5 percent from BULK_AT items, not a separate price band. */
   function bulkPrice(amount) { return Math.round(amount * 0.95); }
@@ -294,11 +325,12 @@
     /* A garment is priced exactly: the blank plus the print they chose. */
     var byPrint = item.garment !== null;
     printOptions.hidden = !byPrint;
-    var lo, hi, printLabel = '';
+    var lo, hi, printLabel = '', print = null;
     if (byPrint) {
-      var print = syncPrintOptions(item);
+      print = syncPrintOptions(item);
       lo = hi = item.garment + print;
       printLabel = ' with ' + PRINT_WORDS[printSize.value] + ' in ' + PRINT_WORDS[printColours.value];
+      if (item.id === 'own') printLabel += ', on garments I bring myself';
     } else {
       lo = item.lo;
       hi = item.hi;
@@ -313,6 +345,8 @@
     sizeTotal.textContent = qty;
 
     priceRows.forEach(function (r) { r.hidden = !SITE.showPrices; });
+    perItemLabelEl.textContent = perItemLabel(item);
+    coversEl.textContent = coversText(item, print, bulk);
     perItemEl.textContent = priceText(lo, hi);
     totalEl.textContent = priceText(lo * qty, hi * qty);
     readyEl.textContent = readyBy(bulk ? 7 : 3);

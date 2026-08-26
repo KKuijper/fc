@@ -319,6 +319,10 @@ a:hover { color: var(--color-accent-600); }
   font-size: 22px;
 }
 .readout dd.accent { color: var(--color-accent-700); }
+.covers {
+  font-size: 17px; line-height: 24px; margin: 20px 0 0;
+  color: var(--ink-label); border-left: 3px solid var(--color-accent); padding-left: 12px;
+}
 .panel-out .btn-block { margin-top: auto; }
 
 /* ── Live designer ─────────────────────────────────────────────────────── */

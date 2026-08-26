@@ -38,7 +38,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;800&display=swap">
 <link rel="stylesheet" href="assets/css/modernist.css?v=125023d6">
-<link rel="stylesheet" href="assets/css/site.css?v=291b18e6">
+<link rel="stylesheet" href="assets/css/site.css?v=32a66fb6">
 <script type="application/ld+json">
 {
   "@context": "https://schema.org",
@@ -410,13 +410,15 @@
         <figure data-cat="gifts"><img src="uploads/Products/faithfulness-printed-blanket.jpg" alt="Black fleece blanket printed with the hymn line Great Is Thy Faithfulness beside a bare branch" loading="lazy" decoding="async"><figcaption>Printed blankets</figcaption></figure>
         <figure data-cat="gifts"><img src="uploads/Products/plesier-spier-boxer-shorts.jpg" alt="Grey boxer shorts printed Plesier Spier beside a flexed arm" loading="lazy" decoding="async"><figcaption>Novelty gifts</figcaption></figure>
         <figure data-cat="gifts"><img src="uploads/Products/property-of-candy-boxer-shorts.jpg" alt="Grey boxer shorts printed Property of Candy below a red lip print" loading="lazy" decoding="async"><figcaption>Personalised gifts</figcaption></figure>
+        <figure data-cat="clothing"><img src="uploads/Products/stronger-than-hodgkin-awareness-tee.jpg" alt="Cream t-shirt printed Stronger than Hodgkin around a lilac awareness ribbon, with the words grateful, blessed, cancer free" loading="lazy" decoding="async"><figcaption>Awareness tees</figcaption></figure>
+        <figure data-cat="clothing"><img src="uploads/Products/michael-jackson-portrait-tee.jpg" alt="Black t-shirt printed with a white portrait of Michael Jackson above his signature" loading="lazy" decoding="async"><figcaption>Portrait tees</figcaption></figure>
         <figure data-cat="stickers"><img src="uploads/Products/loanarand-biltong-corner-sticker.jpg" alt="Cut vinyl shopfront sticker for Loan a Rand and Biltong Corner, Together for more" loading="lazy" decoding="async"><figcaption>Shopfront stickers</figcaption></figure>
       </div>
 
       <div class="gallery-foot">
         <div class="gallery-foot-actions">
-          <button type="button" class="btn btn-secondary btn-nowrap" data-gallery-toggle>See all 34 photos</button>
-          <p class="gallery-count" data-gallery-count aria-live="polite">Showing 8 of 34 prints</p>
+          <button type="button" class="btn btn-secondary btn-nowrap" data-gallery-toggle>See all 49 photos</button>
+          <p class="gallery-count" data-gallery-count aria-live="polite">Showing 8 of 49 prints</p>
         </div>
         <a class="link-strong" data-fb-link href="https://www.facebook.com/fc.concepts.9/" target="_blank" rel="noopener"><svg width="16" height="16" aria-hidden="true"><use href="#i-fb"/></svg>See more on Facebook</a>
       </div>
@@ -567,15 +569,19 @@
             <div class="field">
               <label for="qb-item">What do you need?</label>
               <select id="qb-item" class="input" data-item>
-                <option value="tshirt" data-garment="75" data-max-print="a4" selected>T-shirt, incl. print</option>
-                <option value="polo" data-garment="125" data-max-print="a4">Polo shirt</option>
-                <option value="hoodie" data-garment="350" data-max-print="a4">Hoodie / sweater</option>
-                <option value="cap" data-garment="65" data-max-print="logo" data-prints="1:55,2:55">Cap / beanie</option>
-                <option value="mug" data-lo="120" data-hi="120">Mug (sublimation)</option>
-                <option value="baby" data-garment="90" data-max-print="a5" data-prints="1:30,2:40,c:50">Baby / kids wear</option>
-                <option value="sticker" data-lo="30" data-hi="80">Vinyl sticker</option>
-                <option value="board" data-lo="350" data-hi="650">Welcome / event board</option>
-                <option value="own" data-garment="0" data-max-print="a4">Print on your own garment</option>
+                <optgroup label="We supply the item and print it">
+                  <option value="tshirt" data-garment="75" data-max-print="a4" data-noun="t-shirt" selected>T-shirt</option>
+                  <option value="polo" data-garment="125" data-max-print="a4" data-noun="polo shirt">Polo shirt</option>
+                  <option value="hoodie" data-garment="350" data-max-print="a4" data-noun="hoodie">Hoodie / sweater</option>
+                  <option value="cap" data-garment="65" data-max-print="logo" data-prints="1:55,2:55" data-noun="cap">Cap / beanie</option>
+                  <option value="mug" data-lo="120" data-hi="120" data-noun="mug">Mug (sublimation)</option>
+                  <option value="baby" data-garment="90" data-max-print="a5" data-prints="1:30,2:40,c:50" data-noun="baby or kids garment">Baby / kids wear</option>
+                  <option value="sticker" data-lo="30" data-hi="80" data-noun="sticker">Vinyl sticker</option>
+                  <option value="board" data-lo="350" data-hi="650" data-noun="board">Welcome / event board</option>
+                </optgroup>
+                <optgroup label="You supply the item, we only print">
+                  <option value="own" data-garment="0" data-max-print="a4" data-noun="garment">Print on your own garment</option>
+                </optgroup>
               </select>
             </div>
 
@@ -625,7 +631,7 @@
           <div class="panel-out">
             <dl class="readouts">
               <div class="readout" data-price-row>
-                <dt>Per item</dt>
+                <dt data-per-item-label>Per item, item + print</dt>
                 <dd class="tnum" data-per-item>R90–R140</dd>
               </div>
               <div class="readout" data-price-row>
@@ -637,6 +643,7 @@
                 <dd data-ready-by>—</dd>
               </div>
             </dl>
+            <p class="covers" data-covers>We supply the t-shirt and print it, both in the price.</p>
             <p class="note"><span data-turn-note>Bulk orders are ready within 7 working days.</span> Final price depends on your design, sizes and print method. We confirm everything on WhatsApp before we start.</p>
             <a class="btn btn-primary btn-block btn-nowrap" data-quote-cta href="https://wa.me/27655935067">Send this to our WhatsApp<svg class="ico-inline" width="16" height="16" aria-hidden="true"><use href="#i-wa"/></svg></a>
           </div>
@@ -962,7 +969,7 @@
   <svg width="28" height="28" aria-hidden="true"><use href="#i-wa"/></svg>
 </a>
 
-<script src="assets/js/site.js?v=1ffcddc0" defer></script>
+<script src="assets/js/site.js?v=9f88d00b" defer></script>
 <!-- Google Ads conversion tracking. Every CTA on this page opens WhatsApp,
      so the conversions below are click events, not page loads. Values are in
      EUR because the Ads account is billed in EUR; the ratio between them is
