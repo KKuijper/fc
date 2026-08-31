@@ -121,17 +121,20 @@
 
   function source() { return cameFromAd() ? 'ads' : 'organic'; }
 
-  /* The one phrase Stephen scans for in WhatsApp. Keep it identical
-     everywhere: it is the whole point that it is recognisable at a glance. */
-  function adPrefix() { return source() === 'ads' ? 'I found you through your ad. ' : ''; }
+  /* How the source shows up in WhatsApp. The message is otherwise identical
+     either way; only the greeting word changes, so it reads as an ordinary
+     opening to the customer while Stephen can tell at a glance which enquiry
+     the campaign paid for. "Hello" is the longer word and the one that costs
+     money. It sits first so it survives in the WhatsApp chat list preview. */
+  function greeting() { return source() === 'ads' ? 'Hello' : 'Hi'; }
 
   window.fcSource = source;
-  window.fcAdPrefix = adPrefix;
+  window.fcGreeting = greeting;
 
   /* Callers pass the body only. The greeting and the ad marker are composed
      here so every WhatsApp link on the site opens the same way. */
   function waHref(body) {
-    var text = 'Hi Freestyle Concepts! ' + adPrefix()
+    var text = greeting() + ' Freestyle Concepts! '
       + (body || "I'd like to ask about custom printing.");
     return 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
   }

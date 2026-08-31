@@ -389,18 +389,18 @@
   }
 
   function source() { return cameFromAd() ? 'ads' : 'organic'; }
-  function adPrefix() { return source() === 'ads' ? 'I found you through your ad. ' : ''; }
+  function greeting() { return source() === 'ads' ? 'Hello' : 'Hi'; }
 
   /* The wording is in the markup too so the links still work without JS.
      Restamping here does two things the markup cannot: it gives the nav icon
-     a message of its own, and it adds the ad marker when there is one. The
-     full stop after the greeting is deliberate on this page. */
-  var GREETING = 'Hi Freestyle Concepts. ';
+     a message of its own, and it swaps the greeting word when the visit came
+     from an ad. The full stop after the greeting is deliberate on this page,
+     and the message is otherwise word for word the same either way. */
   var ASK = 'There is a funeral in the family and I would like to ask about memorial printing.';
   var waLinks = document.querySelectorAll('a[href*="wa.me/"]');
   for (var i = 0; i < waLinks.length; i++) {
     waLinks[i].href = 'https://wa.me/27655935067?text='
-      + encodeURIComponent(GREETING + adPrefix() + ASK);
+      + encodeURIComponent(greeting() + ' Freestyle Concepts. ' + ASK);
   }
 
   var CONV = {
