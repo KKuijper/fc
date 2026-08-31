@@ -1035,11 +1035,15 @@
   <svg width="28" height="28" aria-hidden="true"><use href="#i-wa"/></svg>
 </a>
 
-<script src="assets/js/site.js?v=21594874" defer></script>
+<script src="assets/js/site.js?v=f2b66a60" defer></script>
 <!-- Google Ads conversion tracking. Every CTA on this page opens WhatsApp,
      so the conversions below are click events, not page loads. Values are in
      EUR because the Ads account is billed in EUR; the ratio between them is
-     what steers Smart Bidding. -->
+     what steers Smart Bidding.
+
+     The same clicks are also sent to Umami as custom events. Google Ads only
+     reports clicks it can attribute to an ad, so Umami is what makes organic
+     and direct traffic visible. -->
 <script>
 (function () {
   'use strict';
@@ -1056,9 +1060,20 @@
 
   function report(key) {
     var c = CONV[key];
-    if (!c || fired[key]) return;
+    if (!c) return;
+
+    // Umami counts every click and splits ads from organic, so the button
+    // totals can be read next to what Google Ads reports. No dedupe here: a
+    // visitor who taps WhatsApp twice tapped it twice. site.js has already
+    // run by the time anyone can click, so fcSource is there.
+    var src = window.fcSource ? window.fcSource() : 'organic';
+    if (window.umami) umami.track(c.name + '_' + src, { source: src });
+
+    // Ads should count a visitor once per pageview, so the dedupe lives here.
+    if (fired[key]) return;
     fired[key] = true;
     gtag('event', 'conversion', { send_to: c.label, value: c.value, currency: 'EUR' });
+    // Inert until a GA4 destination is configured alongside the AW- one.
     gtag('event', c.name, { value: c.value, currency: 'EUR' });
   }
 

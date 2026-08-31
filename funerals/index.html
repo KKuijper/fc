@@ -364,10 +364,45 @@
 </script>
 
 <!-- Google Ads conversion tracking: every CTA here opens WhatsApp. Same
-     labels as the homepage, values in EUR because the account bills in EUR. -->
+     labels as the homepage, values in EUR because the account bills in EUR.
+     Clicks also go to Umami so organic traffic is counted. -->
 <script>
 (function () {
   'use strict';
+
+  /* This page does not load site.js, so it carries its own copy of the
+     arrived-from-an-ad test. Keep it in step with the one in site.js: same
+     key, same 30 day window, same marker phrase. */
+  var AD_KEY = 'fc_ad_visit';
+  var AD_TTL = 30 * 24 * 60 * 60 * 1000;
+
+  function cameFromAd() {
+    var q = window.location.search;
+    if (/[?&](gclid|gbraid|wbraid)=/.test(q) || /[?&]utm_medium=cpc(&|$)/.test(q)) {
+      try { localStorage.setItem(AD_KEY, String(Date.now())); } catch (e) {}
+      return true;
+    }
+    try {
+      var t = parseInt(localStorage.getItem(AD_KEY), 10);
+      return !!t && (Date.now() - t) < AD_TTL;
+    } catch (e) { return false; }
+  }
+
+  function source() { return cameFromAd() ? 'ads' : 'organic'; }
+  function adPrefix() { return source() === 'ads' ? 'I found you through your ad. ' : ''; }
+
+  /* The wording is in the markup too so the links still work without JS.
+     Restamping here does two things the markup cannot: it gives the nav icon
+     a message of its own, and it adds the ad marker when there is one. The
+     full stop after the greeting is deliberate on this page. */
+  var GREETING = 'Hi Freestyle Concepts. ';
+  var ASK = 'There is a funeral in the family and I would like to ask about memorial printing.';
+  var waLinks = document.querySelectorAll('a[href*="wa.me/"]');
+  for (var i = 0; i < waLinks.length; i++) {
+    waLinks[i].href = 'https://wa.me/27655935067?text='
+      + encodeURIComponent(GREETING + adPrefix() + ASK);
+  }
+
   var CONV = {
     wa:   { label: 'AW-17713141793/yxcACJuZtOYcEKGwpP5B', value: 4, name: 'wa_general'  },
     call: { label: 'AW-17713141793/Ul5nCJ6ZtOYcEKGwpP5B', value: 4, name: 'phone_click' },
@@ -376,9 +411,15 @@
   var fired = {};
   function report(key) {
     var c = CONV[key];
-    if (!c || fired[key]) return;
+    if (!c) return;
+    // Umami counts every click and splits ads from organic.
+    var src = source();
+    if (window.umami) umami.track(c.name + '_' + src, { source: src });
+    // Ads counts a visitor once per pageview.
+    if (fired[key]) return;
     fired[key] = true;
     gtag('event', 'conversion', { send_to: c.label, value: c.value, currency: 'EUR' });
+    // Inert until a GA4 destination is configured alongside the AW- one.
     gtag('event', c.name, { value: c.value, currency: 'EUR' });
   }
   document.addEventListener('click', function (e) {

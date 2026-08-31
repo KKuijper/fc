@@ -92,8 +92,48 @@
 
   var waNumber = SITE.whatsappNumber.replace(/\D/g, '');
 
-  function waHref(text) {
-    return 'https://wa.me/' + waNumber + (text ? '?text=' + encodeURIComponent(text) : '');
+  /* ── Where did this visitor come from? ─────────────────────────────────
+     Google Ads stamps its own clicks with gclid (gbraid and wbraid on iOS),
+     and the campaign's final URL suffix adds utm_medium=cpc. Either one means
+     this visit started with an ad.
+
+     We remember that for 30 days, which is the same click-through window the
+     conversion actions in the Ads account use. A visitor who arrives on an ad,
+     leaves, and comes back a week later to message us was still brought in by
+     the ad, and this keeps our numbers agreeing with what Ads reports.
+
+     Exposed on window because funerals/index.html needs the same answer and
+     does not load site.js. */
+  var AD_KEY = 'fc_ad_visit';
+  var AD_TTL = 30 * 24 * 60 * 60 * 1000;
+
+  function cameFromAd() {
+    var q = window.location.search;
+    if (/[?&](gclid|gbraid|wbraid)=/.test(q) || /[?&]utm_medium=cpc(&|$)/.test(q)) {
+      try { localStorage.setItem(AD_KEY, String(Date.now())); } catch (e) {}
+      return true;
+    }
+    try {
+      var t = parseInt(localStorage.getItem(AD_KEY), 10);
+      return !!t && (Date.now() - t) < AD_TTL;
+    } catch (e) { return false; }
+  }
+
+  function source() { return cameFromAd() ? 'ads' : 'organic'; }
+
+  /* The one phrase Stephen scans for in WhatsApp. Keep it identical
+     everywhere: it is the whole point that it is recognisable at a glance. */
+  function adPrefix() { return source() === 'ads' ? 'I found you through your ad. ' : ''; }
+
+  window.fcSource = source;
+  window.fcAdPrefix = adPrefix;
+
+  /* Callers pass the body only. The greeting and the ad marker are composed
+     here so every WhatsApp link on the site opens the same way. */
+  function waHref(body) {
+    var text = 'Hi Freestyle Concepts! ' + adPrefix()
+      + (body || "I'd like to ask about custom printing.");
+    return 'https://wa.me/' + waNumber + '?text=' + encodeURIComponent(text);
   }
 
   /* South African rand, space-grouped: R1 800 */
@@ -394,7 +434,7 @@
       .map(function (s) { return s + '×' + sizeCount(s); });
     var sizeBit = state.useSizes && filled.length ? ' Sizes: ' + filled.join(', ') + '.' : '';
     var ctaHref = waHref(
-      "Hi Freestyle Concepts! I'd like a quote for " + qty + ' × ' + item.label + printLabel +
+      "I'd like a quote for " + qty + ' × ' + item.label + printLabel +
       priceBit + '.' + sizeBit + ' When could this be ready?'
     );
     quoteCtas.forEach(function (a) { a.href = ctaHref; });
@@ -551,7 +591,7 @@
     if (hasText) bits.push('the text "' + text + '"');
     if (hasLogo) bits.push("my own logo (I'll send the file here)");
     designCta.href = waHref(
-      'Hi Freestyle Concepts! I designed a ' + colour.name.toLowerCase() + ' ' +
+      'I designed a ' + colour.name.toLowerCase() + ' ' +
       prod.label.toLowerCase() + ' on your website' +
       (bits.length ? ' with ' + bits.join(' and ') : '') + '. Can I get a quote?'
     );
