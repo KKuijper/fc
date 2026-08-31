@@ -131,8 +131,8 @@
   window.fcSource = source;
   window.fcGreeting = greeting;
 
-  /* Callers pass the body only. The greeting and the ad marker are composed
-     here so every WhatsApp link on the site opens the same way. */
+  /* Callers pass the body only. The greeting is composed here so every
+     WhatsApp link on the site opens the same way. */
   function waHref(body) {
     var text = greeting() + ' Freestyle Concepts! '
       + (body || "I'd like to ask about custom printing.");
